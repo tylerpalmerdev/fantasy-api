@@ -40,6 +40,7 @@ module.exports = (app) => {
     // app.put('/games/times', gameCtrl.updateTimes);
 
     // id routes
+    app.get('/newIds', newIdCtrl.list);
     app.post('/newIds', newIdCtrl.create);
 };
 

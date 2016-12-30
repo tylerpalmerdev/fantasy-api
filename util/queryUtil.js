@@ -1,4 +1,5 @@
 import lodash from 'lodash';
+import pool from './../database/db-connect';
 
 /*
 Can also except typeMap obj, e.g.:
@@ -82,5 +83,16 @@ module.exports = {
     // used to create a SQL list from JSON arr
     convertArrToForInList(arr) {
         return `(${arr.join(",")})`;
+    },
+    connectToDbAndRunQuery(query, response) {
+        pool.connect((connErr, client, done) => {
+            if (connErr) return response.status(500).json({error: connErr});
+            pool.query(
+                query,
+                (queryErr, result) => {
+                if (queryErr) return response.status(500).json({error: queryErr});
+                response.status(200).json(result.rows);
+            });
+        });
     }
 }
