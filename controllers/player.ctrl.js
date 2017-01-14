@@ -10,16 +10,7 @@ module.exports = {
 
     const insertPlayersQuery = playerQueries.insertPlayers(req.body);
 
-    pool.connect(connErr => {
-      if (connErr) throw connErr;
-
-      pool.query(
-        insertPlayersQuery,
-        (queryErr, result) => {
-          if (queryErr) throw queryErr;
-          res.send(result);
-      });
-    });
+    queryUtil.connectToDbAndRunQuery(insertPlayersQuery, res);
   },
   createIncomplete: (req, res) => {
     if (!req.body) {
@@ -27,17 +18,8 @@ module.exports = {
     };
 
     const insertIncPlayersQuery = playerQueries.insertIncompletePlayers(req.body);
-
-    pool.connect(connErr => {
-      if (connErr) res.status(500).json({error: connErr});
-
-      pool.query(
-        insertIncPlayersQuery,
-        (queryErr, result) => {
-          if (queryErr) res.status(500).json({error: queryErr});
-          res.send(result);
-      });
-    });
+    
+    queryUtil.connectToDbAndRunQuery(insertIncPlayersQuery, res);
   },
   list: (req, res) => {
     if (!req.body) {
@@ -49,16 +31,6 @@ module.exports = {
     let query = playerQueries.getPlayers(limit, status)
 
     queryUtil.connectToDbAndRunQuery(query, res);
-
-    // pool.connect(connErr => {
-    //   if (connErr) res.status(500).json({error: connErr});
-    //   pool.query(
-    //     query,
-    //     (queryErr, result) => {
-    //       if (err) res.status(500).json({error: queryErr});
-    //       res.send(result.rows);
-    //   });
-    // });
   },
   update: (req, res) => {
     if (!req.body) {
@@ -67,18 +39,7 @@ module.exports = {
 
     let query = playerQueries.updatePlayer(req.params.playerId, req.body);
 
-
-
-    pool.connect((connErr, client, done) => {
-      if (connErr) res.status(500).json({error: connErr});
-      pool.query(
-        query,
-        (err, result) => {
-          done();
-          if (err) res.status(500).json({error: queryErr});
-          res.send(result);
-      });
-    });
+    queryUtil.connectToDbAndRunQuery(query, res);
   },
   updateNotOnRoster: (req, res) => {
     if (!req.body) {
@@ -86,17 +47,7 @@ module.exports = {
     }
 
     let query = playerQueries.updateNotOnRoster(req.body);
-
-    pool.connect((connErr, client, done) => {
-      if (connErr) throw connErr;
-      pool.query(
-        query,
-        (err, result) => {
-          done();
-          if (err) res.status(500).json({error: queryErr});
-          res.send(result);
-      });
-    });
+    queryUtil.connectToDbAndRunQuery(query, res);
   },
   updateBio: (req, res) => {
     if (!req.body) {
@@ -104,16 +55,6 @@ module.exports = {
     }
 
     let query = playerQueries.updatePlayerBio(req.params.playerId, req.body);
-
-    pool.connect((connErr, client, done) => {
-      if (connErr) throw connErr;
-      pool.query(
-        query,
-        (err, result) => {
-          done();
-          if (err) throw err;
-          res.send(result);
-      });
-    });
+    queryUtil.connectToDbAndRunQuery(query, res);
   }
 };

@@ -90,8 +90,10 @@ module.exports = {
             pool.query(
                 query,
                 (queryErr, result) => {
+                done();
                 if (queryErr) return response.status(500).json({error: queryErr});
-                response.status(200).json(result.rows);
+                console.log(result.rows[0]);
+                response.status(200).json((result.rows || result));
             });
         });
     }

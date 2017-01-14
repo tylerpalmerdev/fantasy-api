@@ -2,6 +2,8 @@ const playerCtrl = require('./controllers/player.ctrl');
 const projectionCtrl = require('./controllers/projection.ctrl');
 const gameCtrl = require('./controllers/game.ctrl');
 const newIdCtrl = require('./controllers/newId.ctrl');
+const statsCtrl = require('./controllers/stats.ctrl');
+const mlDataCtrl = require('./controllers/mlData.ctrl');
 
 module.exports = (app) => {
     // test routes
@@ -32,8 +34,13 @@ module.exports = (app) => {
     // app.get('/projections', projectionCtrl.list);
     app.post('/projections', projectionCtrl.create);
 
+    // actual game stats routes
+    // app.get('/stats', statsCtrl.list);
+    app.post('/stats', statsCtrl.create);
+
     // // game routes
     app.get('/games', gameCtrl.list);
+    // app.get('/games/recent', gameCtrl.listRecent);
     app.post('/games', gameCtrl.create);
     app.post('/games/postgame', gameCtrl.updatePostGame);
     // app.post('/games/lines');
@@ -42,5 +49,8 @@ module.exports = (app) => {
     // id routes
     app.get('/newIds', newIdCtrl.list);
     app.post('/newIds', newIdCtrl.create);
+
+    // ML data routes:
+    app.get('/mldata', mlDataCtrl.list);
 };
 

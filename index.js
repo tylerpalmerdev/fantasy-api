@@ -21,7 +21,8 @@ if(config.MODE === 'DEV') {
 }
 
 app.use(bearerToken());
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(apiKeyCheck);
 
 // import endpoints file, initialized to express app
