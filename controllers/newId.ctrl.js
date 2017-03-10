@@ -1,4 +1,5 @@
 import pool from './../database/db-connect';
+import queryUtil from './../util/queryUtil';
 import newIdQueries from './../database/queries/newIdQueries';
 
 module.exports = {
@@ -8,31 +9,18 @@ module.exports = {
     }
 
     // parse posted projs into sql insert value rows
-    const query = newIdQueries.insertNewIds(req.body);
-
-    pool.connect((err) => {
-      if (err) throw err;
-      pool.query(
-        query,
-        (err, result) => {
-          if (err) res.status(500).send({error: err});
-          res.status(200).json({});
-      });
-    });
+    const query = newIdQueries.insertSourceIds(req.body);
+    // console.log(query);
+    queryUtil.connectToDbAndRunQuery(query, res);
   },
   list(req, res) {
-
-    // parse posted projs into sql insert value rows
-    const query = newIdQueries.getNewIds();
-
-    pool.connect((err) => {
-      if (err) throw err;
-      pool.query(
-        query,
-        (err, result) => {
-          if (err) res.status(500).send({error: err});
-          res.status(200).json(result.rows);
-      });
-    });
+    let query = newIdQueries.getNewIds(req.body);
+    queryUtil.connectToDbAndRunQuery(query, res);
+  },
+  delete(req, res) {
+    let query = newIdQueries.deleteSourceIds(req.params.playerId);
+    // console.log(query)
+    // res.json({});
+    queryUtil.connectToDbAndRunQuery(query, res);
   }
 };

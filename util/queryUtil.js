@@ -37,7 +37,9 @@ let convertObjToRow = (obj, objMap) => {
         let rawVal = obj[propKey];
         if (propType) {
             if (propType === 'string') {
-                rowArr.push("'" + rawVal + "'");
+                // escape single apost. w/ double for postgres
+                var cleanStr = rawVal.replace("'", "''");
+                rowArr.push("'" + cleanStr + "'");
             } else if (propType === "date") {
                 rowArr.push("to_date('" + rawVal + "', 'YYYY-MM-DD')");
             } else if (propType === "array") {
@@ -90,10 +92,10 @@ module.exports = {
             pool.query(
                 query,
                 (queryErr, result) => {
-                done();
-                if (queryErr) return response.status(500).json({error: queryErr});
-                console.log(result.rows[0]);
-                response.status(200).json((result.rows || result));
+                    client.release();
+                    done();
+                    if (queryErr) return response.status(500).json({error: queryErr});
+                    response.status(200).json((result.rows || result));
             });
         });
     }

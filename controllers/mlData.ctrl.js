@@ -9,14 +9,13 @@ module.exports = {
       return res.status(400).send({message: 'Game date and stat type required in query params.'});
     }
     // extract query params from req
-    const gameDate = req.query.game_date;
-    const statType = req.query.stat_type;
-    const isTraining = req.query.is_training;
+    const gameDate = req.query.game_date,
+          statType = req.query.stat_type,
+          isTraining = (req.query.is_training === 'true'),
+          numRecentGames = (req.query.num_recent_games || 10);
 
     // build query
-    const query = mlQueries.getModelAiDataForDate(gameDate, statType, isTraining);
-    console.log(query);
-
+    const query = mlQueries.getModelAiDataForDate(gameDate, statType, isTraining, numRecentGames);
     queryUtil.connectToDbAndRunQuery(query, res);
   }
 };

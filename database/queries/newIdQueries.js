@@ -1,7 +1,7 @@
 import queryUtil from './../../util/queryUtil';
 
 module.exports = {
-  insertNewIds(newIdsArr) {
+  insertSourceIds(newIdsArr) {
     const newIdsMap = [
       {propKey: "sourceId"},
       {propKey: "playerId", type: "string"},
@@ -17,7 +17,19 @@ module.exports = {
             ON CONFLICT (id) DO NOTHING;`;
   },
   getNewIds() {
-    return `SELECT *
-            FROM nba_new_ids`;
+    return `SELECT player_name,
+            MAX(CASE WHEN source_id = 1 THEN new_id END) nf_id,
+            MAX(CASE WHEN source_id = 2 THEN new_id END) bm_id,
+            MAX(CASE WHEN source_id = 3 THEN new_id END) rw_id,
+            MAX(CASE WHEN source_id = 4 THEN new_id END) fp_id
+            FROM nba_new_ids
+            GROUP BY player_name ORDER BY 1;`;
+  },
+  deleteSourceIds(playerId) {
+    return `DELETE FROM nba_new_ids
+            WHERE player_name IN 
+              (SELECT player_name 
+              FROM nba_players 
+              WHERE player_id = ${playerId});`;
   }
-}
+};

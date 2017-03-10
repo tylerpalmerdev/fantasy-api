@@ -103,5 +103,24 @@ module.exports = {
               player_position = '${updateObj.playerPosition}',
               status = 'PENDING'
             WHERE player_id=${playerId};`;
+  },
+  listPendingSourceIds() {
+    return `SELECT player_name,
+            MAX(CASE WHEN source_id = 1 THEN new_id END) nf,
+            MAX(CASE WHEN source_id = 2 THEN new_id END) bm,
+            MAX(CASE WHEN source_id = 3 THEN new_id END) rw,
+            MAX(CASE WHEN source_id = 4 THEN new_id END) fp
+            FROM nba_new_ids
+            GROUP BY player_name ORDER BY 1;`;
+  },
+  updatePlayerSourceIds(playerId, updateObj) {
+    return `UPDATE nba_players
+            SET
+              nf_id = ${updateObj.nf_id ? "'" + updateObj.nf_id + "'" : 'NULL'},
+              rw_id = ${updateObj.rw_id ? "'" + updateObj.rw_id + "'" : 'NULL'},
+              bm_id = ${updateObj.bm_id ? "'" + updateObj.bm_id + "'" : 'NULL'},
+              fp_id = ${updateObj.fp_id ? "'" + updateObj.fp_id + "'" : 'NULL'}
+            WHERE player_id=${playerId};`;
   }
+
 }

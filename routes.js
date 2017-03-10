@@ -4,6 +4,8 @@ const gameCtrl = require('./controllers/game.ctrl');
 const newIdCtrl = require('./controllers/newId.ctrl');
 const statsCtrl = require('./controllers/stats.ctrl');
 const mlDataCtrl = require('./controllers/mlData.ctrl');
+const predictionCtrl = require('./controllers/prediction.ctrl');
+const salaryCtrl = require('./controllers/salary.ctrl');
 
 module.exports = (app) => {
     // test routes
@@ -30,6 +32,9 @@ module.exports = (app) => {
     // update a player's bio data
     app.put('/players/:playerId/bio', playerCtrl.updateBio);
 
+    // update a player's source ids
+    app.put('/players/:playerId/sourceIds', playerCtrl.updatePlayerSourceIds);
+
     // // projection routes
     // app.get('/projections', projectionCtrl.list);
     app.post('/projections', projectionCtrl.create);
@@ -49,8 +54,16 @@ module.exports = (app) => {
     // id routes
     app.get('/newIds', newIdCtrl.list);
     app.post('/newIds', newIdCtrl.create);
+    app.delete('/newIds/:playerId', newIdCtrl.delete);
 
     // ML data routes:
     app.get('/mldata', mlDataCtrl.list);
+
+    // Prediction routes
+    app.get('/predictions', predictionCtrl.list);
+    app.post('/predictions', predictionCtrl.create);
+
+    // Salary routes
+    app.post('/salaries', salaryCtrl.create);
 };
 

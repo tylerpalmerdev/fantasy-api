@@ -14,8 +14,9 @@ module.exports = {
     // parse posted projs into sql insert value rows
     const query = projectionQueries.insertProjections(req.body);
     const today = moment().format('YYYY-MM-DD');
-    console.log(query);
-    res.status(200).json({"added": 434});
+    // console.log(query);
+    // res.status(200).json({"added": 434});
+    queryUtil.connectToDbAndRunQuery(query, res);
 
     // pool.connect((err) => {
     //   if (err) throw err;
