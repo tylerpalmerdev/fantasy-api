@@ -106,7 +106,7 @@ module.exports = {
         pool.query(
             query,
             (queryErr, result) => {
-                if (queryErr) return response.status(500).json({error: queryErr});
+                if (queryErr) return response.status(500).json({error: queryErr.error});
                 response.status(200).json((result.rows || result));
         });
     },
