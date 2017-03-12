@@ -13,12 +13,13 @@ module.exports = {
 
     // parse posted projs into sql insert value rows
     const postQuery = projectionQueries.insertProjections(req.body);
-    
+    let projectionsDate;
     // check if a date was passed w/ query params
     if (req.query.gameDate) {
-      const projectionsDate = req.query.gameDate;
+      projectionsDate = req.query.gameDate;
     } else {
-      const projectionsDate = moment().format('YYYY-MM-DD');
+      // if not, use today
+      projectionsDate = moment().format('YYYY-MM-DD');
     }
 
     const updateQuery = projectionQueries.updateExtraProjectionData(projectionsDate);
