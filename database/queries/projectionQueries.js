@@ -29,10 +29,10 @@ module.exports = {
   },
   updateExtraProjectionData(gameDate) {
     return `UPDATE nba_projections pr
-            SET (team_id, depth_pos, is_starter) = (pl.team_id, pl.depth_pos, pl.is_starter)
+            SET (team_id, depth_pos, is_starter) = (pl.current_team, pl.current_depth_pos, pl.is_starter)
             FROM nba_players pl
-            WHERE pr.player_id = pl.player ID
+            WHERE pr.player_id = pl.player_id
             AND pr.game_id IN 
-              (SELECT * FROM nba_games WHERE game_date='${date}');`
+              (SELECT game_id FROM nba_games WHERE game_date='${gameDate}');`
   }
 }

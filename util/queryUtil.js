@@ -1,5 +1,6 @@
 import lodash from 'lodash';
 import pool from './../database/db-connect';
+import async from 'async'; // make sure to npm install this
 
 /*
 Can also except typeMap obj, e.g.:
@@ -35,7 +36,9 @@ let convertObjToRow = (obj, objMap) => {
         let propType = objMap[prop]["type"];
         let propKey = objMap[prop]["propKey"];
         let rawVal = obj[propKey];
-        if (propType) {
+        if (rawVal === null) {
+            rowArr.push(null);
+        } else if (propType) {
             if (propType === 'string') {
                 // escape single apost. w/ double for postgres
                 var cleanStr = rawVal.replace("'", "''");
@@ -48,12 +51,13 @@ let convertObjToRow = (obj, objMap) => {
             } else {
                 rowArr.push(rawVal); // if type parse is not defined, push raw
             }
-        } else {
+        } else if (!propType) {
             rowArr.push(rawVal);
         }
     }
-
-    const rowStr = rowArr.toString();
+    
+    // HACKY: replaces empty row entries w/ NULL
+    const rowStr = rowArr.toString().replace(",,",",NULL,");
     return `(${rowStr})`;
 }
 
@@ -87,15 +91,44 @@ module.exports = {
         return `(${arr.join(",")})`;
     },
     connectToDbAndRunQuery(query, response) {
-        pool.connect((connErr, client, done) => {
+        // pool.connect((connErr, client, done) => {
+        //     if (connErr) return response.status(500).json({error: connErr});
+        //     pool.query(
+        //         query,
+        //         (queryErr, result) => {
+        //             client.release();
+        //             done();
+        //             if (queryErr) return response.status(500).json({error: queryErr});
+        //             response.status(200).json((result.rows || result));
+        //     });
+        // });
+    
+        pool.query(
+            query,
+            (queryErr, result) => {
+                if (queryErr) return response.status(500).json({error: queryErr});
+                response.status(200).json((result.rows || result));
+        });
+    },
+    connectToDbAndRunSequentialQueries(resObj, ...queries) {
+        const queryResponses = []
+        pool.connect().then((client) => {
             if (connErr) return response.status(500).json({error: connErr});
-            pool.query(
-                query,
-                (queryErr, result) => {
-                    client.release();
-                    done();
-                    if (queryErr) return response.status(500).json({error: queryErr});
-                    response.status(200).json((result.rows || result));
+            async.each(queries, (query, cb) => {
+                client.query(query, (queryErr, queryResult) => {
+                    if (queryErr) {
+                        cb(queryErr);
+                    } else {
+                        queryResponses.push(queryResult);
+                        cb();
+                    }
+                });
+            }, function handleAsyncError(err) {
+                if (err) {
+                    resObj.status(500).json({error: err});
+                } else {
+                    resObj.json({responses: queryResponses});
+                }
             });
         });
     }

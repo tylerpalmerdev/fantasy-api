@@ -12,27 +12,37 @@ module.exports = {
     }
 
     // parse posted projs into sql insert value rows
-    const query = projectionQueries.insertProjections(req.body);
-    const today = moment().format('YYYY-MM-DD');
-    // console.log(query);
-    // res.status(200).json({"added": 434});
-    queryUtil.connectToDbAndRunQuery(query, res);
+    const postQuery = projectionQueries.insertProjections(req.body);
+    
+    // check if a date was passed w/ query params
+    if (req.query.gameDate) {
+      const projectionsDate = req.query.gameDate;
+    } else {
+      const projectionsDate = moment().format('YYYY-MM-DD');
+    }
 
-    // pool.connect((err) => {
-    //   if (err) throw err;
-    //   pool.query(
-    //     query,
-    //     (insertErr, insertRes) => {
-    //       if (insertErr) res.status(500).send({error: insertErr});
-    //       // update projs you just entered w/ supplemental data
-    //       pool.query(
-    //           projectionQueries.updateExtraProjectionData(today)),
-    //           (updateErr, updateRes) => {
-    //               if (updateErr) res.status(500).send({error: updateErr});
-    //               res.status(200).send({"added": insertRes.rows.length, "updated": updateRes});
-    //           }
-    //     });
-    // });
+    const updateQuery = projectionQueries.updateExtraProjectionData(projectionsDate);
+
+    // https://github.com/brianc/node-pg-pool
+    pool
+      .connect()
+      .then(client => {
+        return client
+          .query(postQuery)
+          .then(() => client);
+      })
+      .then(client => {
+        return client
+          .query(updateQuery)
+          .then(() => client); // returns client   
+      })
+      .then(client => {
+        client.release();
+        res.json({});
+      })
+      .catch(err => {
+        res.status(500).json({error: err.error});
+      });
   },
   list(req, res) {
 

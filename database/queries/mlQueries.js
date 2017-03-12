@@ -47,14 +47,19 @@ module.exports = {
 
                 --- CORE TABLE: GET PROJECTION DATA BY PLAYER FOR DATE & STAT TYPE --
                 FROM (
-                    SELECT player_id, game_date, game_id, team_id, depth_pos, is_starter,
-                    ${statType === 'tpt' ? '' : 'MAX(CASE WHEN source_id = 1 THEN ' + statType + " END) nf,"}
-                    MAX(CASE WHEN source_id = 2 THEN ${statType} END) bm,
-                    MAX(CASE WHEN source_id = 3 THEN ${statType} END) rw,
-                    MAX(CASE WHEN source_id = 4 THEN ${statType} END) fp
+                    SELECT player_id, game_id, team_id, depth_pos, is_starter,
+                    MAX(CASE WHEN source_id = 1 THEN pts END) nf,
+                    MAX(CASE WHEN source_id = 2 THEN pts END) bm,
+                    MAX(CASE WHEN source_id = 3 THEN pts END) rw,
+                    MAX(CASE WHEN source_id = 4 THEN pts END) fp
                     FROM nba_projections
-                    WHERE game_date = '${gameDate}'
-                    GROUP BY player_id, game_date, game_id, team_id, depth_pos, is_starter ORDER BY 1
+                    -- SELECT PROJECTIONS FROM GAMES ON THIS GAME DATE --
+                    WHERE game_id IN (
+                        SELECT game_id
+                        FROM nba_games
+                        WHERE game_date = '${gameDate}'
+                    )
+                    GROUP BY player_id, game_id, team_id, depth_pos, is_starter ORDER BY 1
                 ) p
 
                 JOIN nba_players pl ON pl.player_id = p.player_id
