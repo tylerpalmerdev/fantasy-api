@@ -32,6 +32,7 @@ module.exports = {
             SET (team_id, depth_pos, is_starter) = (pl.current_team, pl.current_depth_pos, pl.is_starter)
             FROM nba_players pl
             WHERE pr.player_id = pl.player_id
+            AND pr.team_id IS NULL AND pr.depth_pos IS NULL
             AND pr.game_id IN 
               (SELECT game_id FROM nba_games WHERE game_date='${gameDate}');`
   }
