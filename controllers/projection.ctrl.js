@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 import pool from './../database/db-connect';
 import queryUtil from './../util/queryUtil';
@@ -23,7 +23,6 @@ module.exports = {
     }
 
     const updateQuery = projectionQueries.updateExtraProjectionData(projectionsDate);
-
     // https://github.com/brianc/node-pg-pool
     pool
       .connect()
