@@ -18,8 +18,8 @@ module.exports = {
     if (req.query.gameDate) {
       projectionsDate = req.query.gameDate;
     } else {
-      // if not, use today
-      projectionsDate = moment().format('YYYY-MM-DD');
+      // if not, use today IN PST
+      projectionsDate = moment().tz("America/Los_Angeles").format('YYYY-MM-DD');
     }
 
     const updateQuery = projectionQueries.updateExtraProjectionData(projectionsDate);
