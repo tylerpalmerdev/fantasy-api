@@ -121,6 +121,24 @@ module.exports = {
               bm_id = ${updateObj.bm_id ? "'" + updateObj.bm_id + "'" : 'NULL'},
               fp_id = ${updateObj.fp_id ? "'" + updateObj.fp_id + "'" : 'NULL'}
             WHERE player_id=${playerId};`;
+  },
+  getPendingPlayerUpdateCounts() {
+    return `SELECT  (
+              SELECT count(*) FROM 
+                (
+                SELECT player_name,
+                MAX(CASE WHEN source_id = 1 THEN new_id END) nf_id,
+                MAX(CASE WHEN source_id = 2 THEN new_id END) bm_id,
+                MAX(CASE WHEN source_id = 3 THEN new_id END) rw_id,
+                MAX(CASE WHEN source_id = 4 THEN new_id END) fp_id
+                FROM nba_new_ids
+                GROUP BY player_name ORDER BY 1
+                ) AS grouped_source_ids
+              ) AS new_source_id_players,
+              (
+              SELECT count(*)
+              FROM nba_players
+              WHERE status = 'INCOMPLETE'
+              ) AS incomplete_players;`
   }
-
 }

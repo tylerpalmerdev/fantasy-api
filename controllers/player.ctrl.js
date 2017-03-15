@@ -70,5 +70,9 @@ module.exports = {
     // console.log(query);
     // res.json({});
     queryUtil.connectToDbAndRunQuery(query, res);
+  },
+  listPendingManualUpdates: (req, res) => {
+    let query = playerQueries.getPendingPlayerUpdateCounts();
+    queryUtil.connectToDbAndRunQuery(query, res);
   } 
 };

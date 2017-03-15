@@ -35,6 +35,9 @@ module.exports = (app) => {
     // update a player's source ids
     app.put('/players/:playerId/sourceIds', playerCtrl.updatePlayerSourceIds);
 
+    // get counts of all pending manual updates 
+    app.get('/players/pending', playerCtrl.listPendingManualUpdates);
+
     // // projection routes
     // app.get('/projections', projectionCtrl.list);
     app.post('/projections', projectionCtrl.create);
