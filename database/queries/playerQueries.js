@@ -86,9 +86,6 @@ module.exports = {
               
             WHERE player_id IN ${playerIdsList};`
   },
-  updatePlayerSourceIds(playerId, updateObj) {
-
-  },
   updatePlayerBio(playerId, updateObj) {
     return `UPDATE nba_players
             SET

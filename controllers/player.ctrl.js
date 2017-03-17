@@ -1,5 +1,6 @@
 import pool from './../database/db-connect';
 import playerQueries from './../database/queries/playerQueries';
+import newIdQueries from './../database/queries/newIdQueries';
 import queryUtil from './../util/queryUtil';
 
 module.exports = {
@@ -66,10 +67,30 @@ module.exports = {
       res.status(400).send({err: "No update data"});
     }
 
-    let query = playerQueries.updatePlayerSourceIds(req.params.playerId, req.body);
+    let updateQuery = playerQueries.updatePlayerSourceIds(req.params.playerId, req.body);
+    let deleteUpdatesQuery = newIdQueries.deleteSourceIds(req.params.playerId);
     // console.log(query);
     // res.json({});
-    queryUtil.connectToDbAndRunQuery(query, res);
+    pool
+      .connect()
+      .then(client => {
+        return client
+          .query(updateQuery)
+          .then(() => client);
+      })
+      .then(client => {
+        return client
+          .query(deleteUpdatesQuery)
+          .then(() => client); // returns client   
+      })
+      .then(client => {
+        client.release();
+        res.json({});
+      })
+      .catch(err => {
+        res.status(500).json({error: err.error});
+      });
+    // queryUtil.connectToDbAndRunQuery(query, res);
   },
   listPendingManualUpdates: (req, res) => {
     let query = playerQueries.getPendingPlayerUpdateCounts();

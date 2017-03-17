@@ -27,9 +27,23 @@ module.exports = {
   },
   deleteSourceIds(playerId) {
     return `DELETE FROM nba_new_ids
-            WHERE player_name IN 
-              (SELECT player_name 
-              FROM nba_players 
-              WHERE player_id = ${playerId});`;
+            WHERE 
+              (source_id = 1 AND new_id IN 
+                (SELECT nf_id
+                FROM nba_players 
+                WHERE player_id = ${playerId})
+              ) OR (source_id = 2 AND new_id IN 
+                (SELECT bm_id
+                FROM nba_players 
+                WHERE player_id = ${playerId})
+              ) OR (source_id = 3 AND new_id IN 
+                (SELECT rw_id
+                FROM nba_players 
+                WHERE player_id = ${playerId})
+              ) OR (source_id = 4 AND new_id IN 
+                (SELECT fp_id
+                FROM nba_players 
+                WHERE player_id = ${playerId})
+              );`;
   }
 };

@@ -12,11 +12,6 @@ module.exports = (app) => {
     app.get('/test', (req, res) => {
         res.status(200).send("API connect success!");
     });
-
-    function logIp(req, res, next) {
-        console.log(req.ip);
-        next();
-    }
   
     // // player routes
     // get all players
@@ -57,7 +52,6 @@ module.exports = (app) => {
     // id routes
     app.get('/newIds', newIdCtrl.list);
     app.post('/newIds', newIdCtrl.create);
-    app.delete('/newIds/:playerId', newIdCtrl.delete);
 
     // ML data routes:
     app.get('/mldata', mlDataCtrl.list);
