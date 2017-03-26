@@ -17,9 +17,6 @@ module.exports = {
     const query = predictionQueries.insertPredictions(finalPredictions);
 
     queryUtil.connectToDbAndRunQuery(query, res);
-
-    // console.log("PRED QUERY", query);
-    // res.json({});
   },
   list(req, res) {
     if (!req.query || !req.query.date || !req.query.source) {

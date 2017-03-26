@@ -27,7 +27,7 @@ module.exports = {
                   MAX(CASE WHEN stat_type = 'tpt'
                     THEN prediction END) tpt
                 FROM nba_predictions
-                WHERE game_date = '${date}' AND source = '${src}'
+                WHERE game_date = '${date}' AND source = '${src}' AND created > '2017-03-01'
                 GROUP BY player_bref_id, game_date, source
                 ORDER BY 1
               ) AS pr
@@ -58,7 +58,7 @@ module.exports = {
       {propKey: "predictionSrc", type: "string"},
       {propKey: "gameDate", type: "date"},
       {propKey: "statType", type: "string"},
-      {propKey: "Scored Labels"},
+      {propKey: "Scored Label"},
       {propKey: "bref_id", type: "string"}
     ];
 
