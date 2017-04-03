@@ -104,5 +104,17 @@ module.exports = {
     console.log("POSTGAME UPDATE QUERY", updateGamesQuery);
 
     res.status(200).json({gamesUpdated: 35});
+  },
+  updateGameSpreads(req, res) {
+    if (!req.body) {
+      res.status(400).send("Missing game data");
+    }
+
+    const query = gameQueries.updateGameSpreadData(req.body);
+    // console.log("QUERY", query);
+    // res.json({});
+
+    queryUtil.connectToDbAndRunQuery(query, res);
+
   }
 };

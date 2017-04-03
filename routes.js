@@ -46,7 +46,7 @@ module.exports = (app) => {
     // app.get('/games/recent', gameCtrl.listRecent);
     app.post('/games', gameCtrl.create);
     app.post('/games/postgame', gameCtrl.updatePostGame);
-    // app.post('/games/lines');
+    app.post('/games/lines', gameCtrl.updateGameSpreads);
     // app.put('/games/times', gameCtrl.updateTimes);
 
     // id routes

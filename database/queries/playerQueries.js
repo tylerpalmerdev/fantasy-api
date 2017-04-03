@@ -106,7 +106,8 @@ module.exports = {
             MAX(CASE WHEN source_id = 1 THEN new_id END) nf,
             MAX(CASE WHEN source_id = 2 THEN new_id END) bm,
             MAX(CASE WHEN source_id = 3 THEN new_id END) rw,
-            MAX(CASE WHEN source_id = 4 THEN new_id END) fp
+            MAX(CASE WHEN source_id = 4 THEN new_id END) fp,
+            MAX(CASE WHEN source_id = 5 THEN new_id END) fc
             FROM nba_new_ids
             GROUP BY player_name ORDER BY 1;`;
   },
@@ -116,7 +117,8 @@ module.exports = {
               nf_id = ${updateObj.nf_id ? "'" + updateObj.nf_id + "'" : 'NULL'},
               rw_id = ${updateObj.rw_id ? "'" + updateObj.rw_id + "'" : 'NULL'},
               bm_id = ${updateObj.bm_id ? "'" + updateObj.bm_id + "'" : 'NULL'},
-              fp_id = ${updateObj.fp_id ? "'" + updateObj.fp_id + "'" : 'NULL'}
+              fp_id = ${updateObj.fp_id ? "'" + updateObj.fp_id + "'" : 'NULL'},
+              fc_id = ${updateObj.fc_id ? "'" + updateObj.fc_id + "'" : 'NULL'}
             WHERE player_id=${playerId};`;
   },
   getPendingPlayerUpdateCounts() {
@@ -127,7 +129,8 @@ module.exports = {
                 MAX(CASE WHEN source_id = 1 THEN new_id END) nf_id,
                 MAX(CASE WHEN source_id = 2 THEN new_id END) bm_id,
                 MAX(CASE WHEN source_id = 3 THEN new_id END) rw_id,
-                MAX(CASE WHEN source_id = 4 THEN new_id END) fp_id
+                MAX(CASE WHEN source_id = 4 THEN new_id END) fp_id,
+                MAX(CASE WHEN source_id = 5 THEN new_id END) fc_id
                 FROM nba_new_ids
                 GROUP BY player_name ORDER BY 1
                 ) AS grouped_source_ids

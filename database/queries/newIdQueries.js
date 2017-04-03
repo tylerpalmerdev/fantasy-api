@@ -21,7 +21,8 @@ module.exports = {
             MAX(CASE WHEN source_id = 1 THEN new_id END) nf_id,
             MAX(CASE WHEN source_id = 2 THEN new_id END) bm_id,
             MAX(CASE WHEN source_id = 3 THEN new_id END) rw_id,
-            MAX(CASE WHEN source_id = 4 THEN new_id END) fp_id
+            MAX(CASE WHEN source_id = 4 THEN new_id END) fp_id,
+            MAX(CASE WHEN source_id = 5 THEN new_id END) fc_id
             FROM nba_new_ids
             GROUP BY player_name ORDER BY 1;`;
   },
@@ -42,6 +43,10 @@ module.exports = {
                 WHERE player_id = ${playerId})
               ) OR (source_id = 4 AND new_id IN 
                 (SELECT fp_id
+                FROM nba_players 
+                WHERE player_id = ${playerId})
+              ) OR (source_id = 5 AND new_id IN 
+                (SELECT fc_id
                 FROM nba_players 
                 WHERE player_id = ${playerId})
               );`;

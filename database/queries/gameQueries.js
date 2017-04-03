@@ -40,5 +40,26 @@ module.exports = {
     return `UPDATE nba_games
             SET game_slug = to_char(game_date, 'YYYY-MM-DD') || '_' || away_team_id || '_' || home_team_id
             WHERE game_slug IS NULL`;
+  },
+  updateGameSpreadData(spreads) {
+    const gameSpreadsMap = [
+      {propKey: "gameId"},
+      {propKey: "homeSpread"},
+      {propKey: "total"},
+      {propKey: "awayPredPts"},
+      {propKey: "homePredPts"}
+    ];
+
+    const updateSpreadsStr = queryUtil.parseArrOfObjs(spreads, gameSpreadsMap);
+
+    return `UPDATE nba_games AS g
+            SET
+              home_spread = u.home_spread,
+              total_pred = u.total_pred,
+              away_pred_pts = u.away_pred_pts,
+              home_pred_pts = u.home_pred_pts
+            FROM (VALUES${updateSpreadsStr}) 
+            AS u(game_id, home_spread, total_pred, away_pred_pts, home_pred_pts)
+            WHERE u.game_id = g.game_id;`
   }
 }

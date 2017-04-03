@@ -71,6 +71,7 @@ module.exports = {
 
                 -- JOIN ON TEAM THAT PLAYER WAS ON AT THE TIME OF THE PROJECTION --
                 -- NOTE: WILL GET IN REAL TIME WHEN CALCULATED PROJECTIONS IN REAL TIME --
+                -- TODO: update so this uses pl.current_team, not projection team
                 LEFT JOIN nba_teams t ON t.team_id = p.team_id
 
                 -- GET LAST GAME FOR TEAM --

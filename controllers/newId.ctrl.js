@@ -10,7 +10,6 @@ module.exports = {
 
     // parse posted projs into sql insert value rows
     const query = newIdQueries.insertSourceIds(req.body);
-    // console.log(query);
     queryUtil.connectToDbAndRunQuery(query, res);
   },
   list(req, res) {
