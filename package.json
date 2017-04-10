@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "babel-watch --presets es2015 index.js"
+    "build": "babel src -d build",
+    "start": "node ./build/index.js"
   },
   "author": "",
   "license": "ISC",
@@ -24,6 +25,8 @@
     "pg": "^6.1.5"
   },
   "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-preset-es2015": "^6.24.1",
     "babel-watch": "^2.0.3"
   }
 }

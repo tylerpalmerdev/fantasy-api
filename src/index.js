@@ -4,7 +4,7 @@ const lodash = require('lodash');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
-const config = require('./config');
+const config = require('./../config');
 
 let app = express();
 

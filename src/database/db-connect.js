@@ -1,6 +1,6 @@
 // import dependencies
 import pg from 'pg';
-import config from './../config';
+import config from './../../config';
 
 // set up & connect to postgres db
 const dbConfig = {
