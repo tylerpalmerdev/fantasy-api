@@ -121,6 +121,12 @@ module.exports = {
               fc_id = ${updateObj.fc_id ? "'" + updateObj.fc_id + "'" : 'NULL'}
             WHERE player_id=${playerId};`;
   },
+    updatePlayerPosition(playerId, newPosition) {
+    return `UPDATE nba_players
+            SET
+              player_position = '${newPosition}'
+            WHERE player_id=${playerId};`;
+  },
   getPendingPlayerUpdateCounts() {
     return `SELECT  (
               SELECT count(*) FROM 

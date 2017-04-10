@@ -30,6 +30,9 @@ module.exports = (app) => {
     // update a player's source ids
     app.put('/players/:playerId/sourceIds', playerCtrl.updatePlayerSourceIds);
 
+    // update a player's position
+    app.put('/players/:playerId/position', playerCtrl.updatePosition);
+
     // get counts of all pending manual updates 
     app.get('/players/pending', playerCtrl.listPendingManualUpdates);
 

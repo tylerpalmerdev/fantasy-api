@@ -58,6 +58,16 @@ module.exports = {
     let query = playerQueries.updatePlayerBio(req.params.playerId, req.body);
     queryUtil.connectToDbAndRunQuery(query, res);
   },
+  updatePosition: (req, res) => {
+    if (!req.body) {
+      res.status(400).send({err: "No update data"});
+    }
+
+    let query = playerQueries.updatePlayerPosition(req.params.playerId, req.body.newPosition);
+    // console.log(query);
+    // res.json({});
+    queryUtil.connectToDbAndRunQuery(query, res);
+  },
   listNewSourceIds: (req, res) => {
     let query = playerQueries.listPendingSourceIds();
     queryUtil.connectToDbAndRunQuery(query, res);
