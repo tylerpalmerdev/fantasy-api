@@ -84,23 +84,36 @@ module.exports = {
     pool
       .connect()
       .then(client => {
-        return client
-          .query(updateQuery)
-          .then(() => client);
-      })
-      .then(client => {
-        return client
-          .query(deleteUpdatesQuery)
-          .then(() => client); // returns client   
-      })
-      .then(client => {
-        client.release();
-        res.json({});
-      })
-      .catch(err => {
-        res.status(500).json({error: err.error});
+        client.query(updateQuery, (updateErr) => {
+          if (updateErr) {
+            client.release();
+            return res.status(500).send({error: updateErr.error});
+          }
+
+          client.query(deleteUpdatesQuery, (deleteErr) => {
+            if (deleteErr) {
+              client.release();
+              return res.status(500).send({error: deleteErr.error});
+            }
+            
+            client.release();
+            res.json({});
+          });
+        });
       });
-    // queryUtil.connectToDbAndRunQuery(query, res);
+      // .then(response => {
+      //   return client
+      //     .query(deleteUpdatesQuery)
+      //     .then(() => client); // returns client   
+      // })
+      // .then(response => {
+      //   client.release();
+      //   res.json({});
+      // })
+      // .catch(err => {
+      //   client.release();
+      //   res.status(500).json({error: err.error});
+      // });
   },
   listPendingManualUpdates: (req, res) => {
     let query = playerQueries.getPendingPlayerUpdateCounts();

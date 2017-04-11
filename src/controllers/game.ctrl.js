@@ -2,35 +2,6 @@ import pool from './../database/db-connect';
 import queryUtil from './../util/queryUtil';
 import gameQueries from './../database/queries/gameQueries';
 
-const updateTypeMap = {
-  game_date: "date"
-}
-
-// const updatePostGameMap = {
-//   gameId: {
-//     order: 1
-//   },
-//   awayTeamPts: {
-//     order: 2
-//   },
-//   homeTeamPts: {
-//     order: 3
-//   },
-//   awayTeamInjured: {
-//     order: 4,
-//     type: "array"
-//   },
-//   homeTeamInjured: {
-//     order: 4,
-//     type: "array"
-//   },
-//   attendance: {
-//     order: 5
-//   }
-// }
-
-
-
 module.exports = {
   create(req, res) {
     if (!req.body) {
@@ -65,15 +36,17 @@ module.exports = {
   list(req, res) {
     const queryParams = req.query;
     const query = gameQueries.getGames((req.query.game_date || req.query.min_date), req.query.max_date);
-    pool.connect((err) => {
-        if (err) throw err;
-        pool.query(
-            query,
-            (getErr, getRes) => {
-            if (getErr) res.status(500).send({error: getErr});
-            res.status(200).json(getRes.rows);
-        });
-    }); 
+
+    queryUtil.connectToDbAndRunQuery(query, res);
+    // pool.connect((err) => {
+    //     if (err) throw err;
+    //     pool.query(
+    //         query,
+    //         (getErr, getRes) => {
+    //         if (getErr) res.status(500).send({error: getErr});
+    //         res.status(200).json(getRes.rows);
+    //     });
+    // }); 
   },
   updatePostGame(req, res) {
     if (!req.body) {

@@ -23,40 +23,63 @@ module.exports = {
     }
 
     const updateQuery = projectionQueries.updateExtraProjectionData(projectionsDate);
-    // https://github.com/brianc/node-pg-pool
     pool
       .connect()
       .then(client => {
-        return client
-          .query(postQuery)
-          .then(() => client);
-      })
-      .then(client => {
-        return client
-          .query(updateQuery)
-          .then(() => client); // returns client   
-      })
-      .then(client => {
-        client.release();
-        res.json({});
-      })
-      .catch(err => {
-        res.status(500).json({error: err.error});
+        client.query(postQuery, (postErr) => {
+          if (postErr) {
+            client.release();
+            return res.status(500).send({error: postErr.error});
+          }
+
+          client.query(updateQuery, (updateErr) => {
+            if (updateErr) {
+              client.release();
+              return res.status(500).send({error: updateErr.error});
+            }
+            
+            client.release();
+            res.json({});
+          });
+        });
       });
+    // https://github.com/brianc/node-pg-pool
+    // pool
+    //   .connect()
+    //   .then(client => {
+    //     return client
+    //       .query(postQuery)
+    //       .then(() => client);
+    //   })
+    //   .then(client => {
+    //     return client
+    //       .query(updateQuery)
+    //       .then(() => client); // returns client   
+    //   })
+    //   .then(client => {
+    //     client.release();
+    //     res.json({});
+    //   })
+    //   .catch(err => {
+    //     res.status(500).json({error: err.error});
+    //   });
   },
   list(req, res) {
 
     let limit = (req.query.limit || 1000);
+    let query = projectionQueries.getProjections(limit);
 
-    pool.connect((err) => {
-      if (err) throw err;
-      pool.query(
-        projectionQueries.getProjections(limit),
-        (err, result) => {
-          if (err) res.status(500).send({error: err});
-          console.log("GET RESULT", result.rows);
-          res.send(result.rows);
-      });
-    });
+    queryUtil.connectToDbAndRunQuery(query, res);
+
+    // pool.connect((err) => {
+    //   if (err) throw err;
+    //   pool.query(
+    //     projectionQueries.getProjections(limit),
+    //     (err, result) => {
+    //       if (err) res.status(500).send({error: err});
+    //       console.log("GET RESULT", result.rows);
+    //       res.send(result.rows);
+    //   });
+    // });
   }
 };
