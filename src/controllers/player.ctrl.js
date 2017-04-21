@@ -10,7 +10,7 @@ module.exports = {
     };
 
     const insertPlayersQuery = playerQueries.insertPlayers(req.body);
-
+    
     queryUtil.connectToDbAndRunQuery(insertPlayersQuery, res);
   },
   createIncomplete: (req, res) => {
