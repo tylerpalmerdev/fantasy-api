@@ -47,7 +47,7 @@ let convertObjToRow = (obj, objMap) => {
                 rowArr.push("to_date('" + rawVal + "', 'YYYY-MM-DD')");
             } else if (propType === "array") {
                 // TODO: convert strings in arr to str
-                rowArr.push("ARRAY[" + rawVal.toString() + "]");
+                rowArr.push("ARRAY[" + rawVal.toString() + "]::integer[]"); // integers only, change for other types
             } else {
                 rowArr.push(rawVal); // if type parse is not defined, push raw
             }

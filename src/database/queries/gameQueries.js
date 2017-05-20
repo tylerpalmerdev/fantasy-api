@@ -31,7 +31,8 @@ module.exports = {
               away_team_injured = u.away_team_injured,
               home_team_injured = u.home_team_injured,
               attendance = u.attendance,
-              home_team_won = (CASE WHEN (u.home_team_pts > u.away_team_pts) THEN TRUE ELSE FALSE END)
+              home_team_won = (CASE WHEN (u.home_team_pts > u.away_team_pts) THEN TRUE ELSE FALSE END),
+              over_under = (CASE WHEN (u.home_team_pts + u.away_team_pts) > g.total_pred THEN 'O' ELSE 'U' END)
             FROM (VALUES${updateListStr}) 
             AS u(game_id, away_team_pts, home_team_pts, away_team_injured, home_team_injured, attendance)
             WHERE u.game_id = g.game_id;`

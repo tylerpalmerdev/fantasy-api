@@ -64,19 +64,16 @@ module.exports = {
 
     const updatePostGameMap = [
       {propKey: "gameId"},
-      {propKey: "awayTeamPts"},
-      {propKey: "homeTeamPts"},
-      {propKey: "awayTeamInjured", type: "array"},
-      {propKey: "homeTeamInjured", type: "array"},
+      {propKey: "awayPoints"},
+      {propKey: "homePoints"},
+      {propKey: "awayTeamInactive", type: "array"},
+      {propKey: "homeTeamInactive", type: "array"},
       {propKey: "attendance"}
     ];
 
     const updateGameRowsStr = queryUtil.parseArrOfObjs(req.body, updatePostGameMap);
     const updateGamesQuery = gameQueries.updatePostGameData(updateGameRowsStr);
-
-    console.log("POSTGAME UPDATE QUERY", updateGamesQuery);
-
-    res.status(200).json({gamesUpdated: 35});
+    queryUtil.connectToDbAndRunQuery(updateGamesQuery, res);
   },
   updateGameSpreads(req, res) {
     if (!req.body) {
